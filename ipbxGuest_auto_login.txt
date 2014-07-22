@@ -1,0 +1,125 @@
+<html>
+<!--############################################################
+### iPBX Auto Guest Login - By: Bryan Hopper
+##############################################################
+### Descirption:
+### Designed to allow quicker and easier access in to PBX systems via I/S.
+### Simply enter the PBX name as the user and password fields are already
+### filled in, and click Login to be automaticaly logged into the desired PBX.
+### 
+### No more need to: 
+### - hunt for the IP address of the PBX server.
+### - hunt for the name of the PBX in the drop down list.
+##############################################################
+### This was originaly designed with all original code, as it consisted of just
+### a label, a text box, and a button.
+### To pretty it up, code was borrowed from the original iPBX Manager Guest
+### Login page to give it the original feel.
+### Some of this code as modified to fit the means, while code was also
+### added to properly get you to where you need to be.
+### Also added a link at the bottom of the page to access the real deal.
+###############################################################
+### ***Added a hotfix to resolve PBX: shaffersimpkins, this was not being properly resolved server side.***
+### ***Added plesciaandco ***
+############################################################## -->
+ 
+ 
+<!-- ###################### Start Head ########################### -->
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+ <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+ <META HTTP-EQUIV="Expires" CONTENT="Fri, Jun 12 1981 08:20:00 GMT">
+ <META http-equyiv="refreh" contents="0">
+ <title>iPBX Manager - Login</title>
+<script language="javascript" type="text/javascript">
+<!--
+function redirect()
+{
+     IPBX=document.login_form.target.value;
+     IPBX=IPBX.replace(/[^a-zA-Z0-9]+/g,"");
+     URL=0;
+     if (IPBX !== "")
+     {
+     URL="http://" + IPBX +".vo.packet8.net:8079/GuestServlet?class=Login";
+     //###############################################################
+     if(IPBX == "shaffersimpkins"){ URL="http://" + "192.84.16.80" +":8079/GuestServlet?class=Login"; } //server does not properly resolve this PBX.
+     if(IPBX == "plesciaandco"){ URL="http://" + "192.84.16.200" +":8079/GuestServlet?class=Login"; }
+     //###############################################################
+     document.login_form.userTF.value="guest";
+     document.login_form.pwdTF.value="guest";
+     document.login_form.target.value=IPBX;
+     document.login_form.action=URL;
+     }
+     return URL;
+}
+// -->
+</script>
+
+</head>
+<!-- ###################### End Head ########################### -->
+ 
+
+
+
+
+<body bgcolor="#FFFFFF" text="#000000" vlink="#551A8B" link="#0000EE" alink="#FF0000">
+<form name="login_form" onsubmit="return redirect();" method="POST" >
+<!-- ######################### Start Layout ######################### -->
+<table width="100%" bgcolor="#073771" border="0" cellpadding="1" cellspacing="0"> <tr><td>
+ <!-- ######################## Start Page Title ############################## -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="10">
+  <tr><td width="20%" valign="bottom" >
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+   <td align="left" valign="bottom"><a  href="http://www.8x8.com"><img  border="0" src="http://dantheman.vo.packet8.net:8079/img/8x8logo.jpg" alt="8x8,Inc web site"></a></td>
+   <td width="0">&nbsp;</td>
+  <td align="left" valign="bottom"> <font color="#ffffff" ><b>iPBX Manager</b></font></td>
+  </tr>
+  </table>
+ </td>
+  <td width="60%" align="center"><font color="#ffffff" size="+3"><b>iPBX Auto Guest Login</b></td>
+ <td width="20%" align="right" nowrap><font color="#ffffff"></td>
+ </tr>
+ </table>
+ <!-- ######################## End Page Title ############################## -->
+ </td></tr>
+  <!-- Menu -->
+  <tr><td>
+   <table bgcolor="#f0f0f0" width="100%" border="0" cellspacing="0" cellpadding="2">
+     <tr>
+    <td>
+      &nbsp;<!--_menubar_-->
+    </td>
+    <td align="right">&nbsp;&nbsp;&nbsp;</td>
+     </tr>
+   </table>
+  </td></tr>
+</table>
+<!-- ######################### End Layout ######################### -->
+ <!-- ################# Start Login Table ########################## -->
+<table width="100%" border="0" cellspacing="0" cellpadding="10" bgcolor="#ffffff"> 
+ <tr><td align="center"><font color="#ff0000"><b></td> </tr><tr><td align="center">
+<table bgcolor="#5a5984" border="0" cellpadding="1" cellspacing="0">
+   <tr><td>
+   <!-- ######################### Start Content ############################## -->
+   <table border="0" cellpadding="10" cellspacing="0" bgcolor="#f0f0f0">
+    	<tr><td align="right">Username :</td>
+    	 <td><input type="text" name="userTF" value="guest"></td></tr>   
+    	<tr><td align="right">Password :</td>
+    	 <td><input type="password" name="pwdTF" value="guest"></td></tr>
+    	<tr><td align="right">iPBXName :</td><td><input type="text" name="target" value="" ></td></tr>
+   	 <tr><td colspan="2" align="center"><input type="submit" name="LoginPB" value="Login"></td></tr>
+    	<td><input type="hidden" name="class" value="Login"></td>
+   </table>
+   <!-- ######################### End Content ############################## -->
+   </td></tr></table> </td></tr></table>
+<!-- ########################## End Login Table  ################################ -->
+<!-- ########################## Start Footer ################################### -->
+ <tr><td align="left">
+   <hr><font color="#909090" size="-1">Created by: Bryan Hopper <br>  
+   <a  href="http://dantheman.vo.packet8.net:8079/GuestServlet?class=Login"><p align="center">[Use Original Login Page]</p></a>
+   </font></td> </tr>
+<!-- ########################## End Footer ################################### -->
+</form></body></html>
+

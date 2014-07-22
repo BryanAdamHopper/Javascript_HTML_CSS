@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
+<head>
+<title>CC Hold Account Filter</title>
+<!-- ########### Created By: Bryan Hopper ###########
+     ##  Simple format tool for releasing multiple accounts from credit card hold
+     ##  
+     ##  Multiple CC's can be released in a single go,
+     ##  but require that only the account number be present
+     ##  and additional accounts to be entered on a new line
+     ############################################# -->
+
+<script language="javascript" type="text/javascript">
+function ftest()
+{
+	document.frm1.txtaccounts.value="P8B000000182121 	packet8sm 	Unlimited Extension 	15132142176 	103 	Broadband Phone Adapter 430 	Active 	2007-06-28 	SO00037669 	  	MRC ? \nP8B000000214371 	packet8sm 	Unlimited Extension 	18052734984 	104 	Broadband Phone Adapter 430 	Active 	2007-08-01 	SO00041933 	  	MRC ? \nP8B000000214372 	packet8sm 	Unlimited Extension 	18052834297 	105 	Polycom SoundPoint IP 550 	Active 	2007-08-01 	SO00041933 	  	MRC ? \nP8B000000241118 	packet8sm 	Unlimited Extension 	18052024660 	106 	Aastra IP 6755i Deskphone 	Active 	2007-09-20 	SO00047616 	  	MRC ? \nP8B000000250898 	packet8sm 	Unlimited Extension 	18053227777 	107 	Aastra IP 6755i Deskphone 	Active 	2007-10-10 	SO00049959 	  	MRC ?";
+}
+
+function fclear()
+{
+	document.frm1.txtaccounts.value="";
+	document.frm1.txtoutput.value="";
+}
+
+function fgrabaccts()
+{
+	// extract account numbers
+	$acct=document.frm1.txtaccounts.value;
+	$z=0; $y=0; $x=0; $a="";
+	$x=$acct.indexOf("P8",$x);
+	while($x>-1)
+	{
+		// Find "P8" then copy the account number until it finds a space
+		$z=$acct.indexOf("P8",$x);
+		$y=$acct.indexOf(" ",$x);
+		$temp=$acct.slice($z,$y+1);
+		$a=$a+$temp+"\n";
+		$x=$acct.indexOf("P8",$y);
+	}
+	document.frm1.txtoutput.value=$a;
+}
+</script>
+</head>
+
+
+<body bgcolor="#E5EAF1">
+	<H1>CC Hold Account Filter</H1>
+	<a>Only works with account numbers starting with "P8" (ie: P8B, P8R, P8M)</a>
+	<form name="frm1">
+		<textarea name="txtaccounts" style="width:100%; height:200px;"></textarea></br>
+		<input type="button" value="Generate" onClick="fgrabaccts();">
+		<input type="button" value="Test" onClick="ftest();">
+		<input type="button" value="Clear" onClick="fclear();"></br>
+		<textarea name="txtoutput" style="width:100%; height:200px;"></textarea></br>
+	</form>
+</body>
+</html>

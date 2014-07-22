@@ -1,0 +1,1034 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
+<head>
+<link rel="icon" type="image/png" href="cancel_icons/gearrow.png">
+<title>Cancel Template Creator Beta v1.4.0 Layout Test</title>
+<!-- ###################### Project Start Date: Wednesday, June 29, 2011, 10:20:16 AM ##################
+# ---- Version History --------
+#
+# v1.4.0 - [3/13/2012]
+# - Added in auto summary grabber.
+# - Removed text fields that are no longer required due to the added summary grabber.
+#
+# v1.3.3 - [12/9/2011]
+# - Fixed issue that was caused due to the addition of the PBX "nickname" in CRM.
+# - Added color test to offer customization and suggested final colors. Customization might make it into release.
+# - Custom color options for background and text for:  title banner, page body, text boxes, and buttons.
+# - Added feature to retain the users custom color settings.
+# - Created an alternate layout that should feel more natural.
+# - Fixed a bug that caused disco fees if account start month was Dec and the current was Jan. This now properly wraps continous months.
+#
+# v1.3.2 - Still adding to the cancel fee list.
+# - Adding in auto calculation for total disco fees. Found an error that will cause only 1 occurance of disco fees to be calculated if sharing the same order number.
+# - Adding in a check for device type to properly calculate disco fees for tricky extension types, thanks to Randy Lopez.
+# - Re-writting functions for calculations to run more smoothly, reducing file size from 51KB to 26.2KB, and now ignores closed accounts.
+#
+# v1.3.1 - Fixed issue where previous updates where lost in version 1.3 due to file mixup.
+# - Fine tuned the layout so that the text fields appear more simular in both IE and FF. Most of the layout will now adjust based on the current window size.
+# - Added Completion Check.
+# - Added Plus Plan Check.
+# - Added Plan Type Grabber. (Unlimited Extension, Metered Extension, etc...) 
+# - Added Disco Fee Amount Checker. (large portion added, but still in the works, will output "Disco Fee Not Implemented Yet" if not added yet.
+# - Expanded on the completion check and added a final warning box reminding that potential disconnection fees have been detected.
+# - Release 2 of this version corrected an error in the disco fee ammount checker (it was reporting 9.99 for all disco fees) as well as the account grabber (off by 1 error), thanks to Justin Sheeler.
+# - 11/30/2011 New addition to the Beta Team: Steve Milne.
+#
+# v1.3 - Added completion check.
+# - Added version history.
+# - Fine tuned date grabber to work in any year after 2004. This was originaly stuck on 2004 to 2024, but now goes from 2004 to today's year.
+#
+# v1.2 - Fine tuned early disconnection check.
+# - Reason for cancellation default is now blank, thanks to Brian Swall.
+#
+# v1.1 - Fixed customer name check.
+#
+# v1.0 - Added basic early disconnection check.
+# - Beta Team: Stevan Waddell, Brian Swall, Randy Lopez, Bryan Hopper, Richard Walls, Justin Sheeler, Brahm Amott.
+#
+########################## Author: Bryan Hopper ################################################# -->
+<script language="javascript" type="text/javascript">
+<!--
+function fcompcheck()
+{
+	/*Form Completion Check*/
+	$check=""; $error=0;
+	if(document.frm1.type.value==""){ $check=$check+"Cancel Type (header)"+"\n"; $error=1; }
+	if(document.frm1.disco.value==""){ $check=$check+"Disconnection Fees (header)"+"\n"; $error=1; }
+	if(document.frm1.rma.value==""){ $check=$check+"RMA (header)"+"\n"; $error=1; }
+	if(document.frm1.custname.value==""){ $check=$check+"Customer Name"+"\n"; $error=1; }
+	if(document.frm1.custphone.value==""){ $check=$check+"Phone Number"+"\n"; $error=1; }
+	if(document.frm1.compname.value==""){ $check=$check+"Company Name"+"\n"; $error=1; }
+	if(document.frm1.cemail.value==""){ $check=$check+"Customer Email"+"\n"; $error=1; }
+	/* if(document.frm1.orderid.value==""){ $check=$check+"Order IDs"+"\n"; $error=1; } */
+	/*if(document.frm1.startdate.value==""){ $check=$check+"Start Dates"+"\n"; $error=1; } */
+	if(document.frm1.accountlines.value==""){ $check=$check+"Account Lines"+"\n"; $error=1; }
+	if(document.frm1.reason.value==""){ $check=$check+"Cancellation Reason"+"\n"; $error=1; }
+	if(document.frm1.adminnote.value==""){ $check=$check+"Admin Notes"+"\n"; $error=1; }
+	if(document.frm1.discofee.value==""){ $check=$check+"Disconnection Fees (body)"+"\n"; $error=1; }
+	if(document.frm1.supervisor.value==""){ $check=$check+"Supervisor Name"+"\n"; $error=1; }
+	if($error==1){ alert("Missing Information: "+"\n"+ "------------------------------------ \n"+$check); return false; }
+	if($error==0){ return true; }
+}
+
+function fgen()
+{
+	/*Template Output Generator*/
+	$check=fcompcheck();
+	if($check)
+	{
+		$output=document.frm1.type.value+" / ";
+		$output=$output+"Disconnection Fees - "+document.frm1.disco.value+" / ";
+		$output=$output+"RMA - "+document.frm1.rma.value+"\n";
+		$output=$output+"\n";
+		$output=$output+"\n";
+		$name=fnameformat();
+		$output=$output+"Contact Name : "+ $name +"\n";
+		$output=$output+"Contact Phone Number : "+document.frm1.custphone.value+"\n";
+		$output=$output+"Company Name : "+document.frm1.compname.value+"\n";
+		$output=$output+"Email Address : "+document.frm1.cemail.value+"\n \n";
+		$output=$output+"Order ID(s) : \n"+document.frm1.orderid.value+"\n";
+		$output=$output+"Account Line(s) : \n"+document.frm1.accountlines.value+"\n \n";
+		$output=$output+"Account Start Date(s) : \n"+document.frm1.startdate.value+"\n";
+		$output=$output+"What was done to Save the customer? \n";
+		$output=$output+"Dormant plans offered?: \n";
+		$output=$output+"Promotions?: \n";
+		$output=$output+"Credits?: \n";
+		$output=$output+"\n";
+		$output=$output+"Reason for Cancellation (This needs to be at least one FULL sentence minimum with an actual reason): \n";
+		$output=$output+document.frm1.reason.value+"\n \n";
+		$output=$output+"Disconnect Fee (the more details the better) : \n"+document.frm1.discofee.value+"\n \n";
+		$output=$output+"Admin Notes (the more details the better) : \n"+document.frm1.adminnote.value+"\n \n";
+		$output=$output+"Fusion Supervisor : \n"+document.frm1.supervisor.value+"\n";
+		document.frm1.output.value=$output;
+	}
+}
+
+function fnameformat()
+{	
+	/*Name Format Correction Check*/
+	$nameformat = document.frm1.custname.value;
+	$nf = $nameformat.indexOf(",");
+	if($nf != -1)
+	{
+		/*Put what is in front on the comma behind whats after the comma and remove the comma.*/
+		$lastname = $nameformat.slice(0,$nf);
+		$firstname = $nameformat.slice($nf+1);
+		$name = $firstname + " " + $lastname;
+		$name = (trim($name));
+		return $name;
+	}
+	$nameformat=(trim($nameformat));
+	return $nameformat;
+}
+
+function trim(s) {
+	/*Trim leading and trailing spaces*/
+	s = s.replace(/(^\s*)|(\s*$)/gi,"");
+	s = s.replace(/[ ]{2,}/gi," ");
+	s = s.replace(/\n /,"\n");
+	return s;
+}
+
+function functionSummary()
+{
+	$ummary = document.frm1.summaryIn.value;
+
+	$nameStart = $ummary.indexOf("Name",0);
+	$nameEnd = $ummary.indexOf("Customer",0);
+	$name = $ummary.slice($nameStart+4,$nameEnd);
+	if ($name.indexOf("Details",0) != -1) { $name = $name.slice(0,$name.indexOf("Details",0)); }
+	$name = trim($name);
+
+	$emailStart = $ummary.indexOf("Profile Address",0);
+	$emailEnd = $ummary.indexOf("Email",0);
+	$email = $ummary.slice($emailStart+15,$emailEnd);	
+	$emailAt = $email.indexOf("@",0);
+	$emailSpace = $email.indexOf(" ",$emailAt);
+	$email = $email.slice(0,$emailSpace);
+	$email = trim($email);
+
+	$custStart = $ummary.indexOf("Customer",0);
+	$custEnd = $ummary.indexOf("Details",$custStart);
+	$cust = $ummary.slice($custStart+8,$custEnd);
+	x=0; while ($cust.charAt(x) == " ") { x++; }
+	$cust = $cust.slice(x);
+	$cust = $cust.slice(0,$cust.indexOf("  ",0));
+	$cust = trim($cust);
+
+	document.frm1.custname.value = $name;
+	document.frm1.compname.value = $cust;
+	document.frm1.cemail.value = $email;	
+}
+
+function Set_Cookie( name, value, expires, path, domain, secure )
+{
+	// set time in milliseconds
+	var today = new Date();
+	today.setTime( today.getTime() );
+
+	if ( expires )
+	{
+		expires = expires * 1000 * 60 * 60 * 24; 
+	}
+	var expires_date = new Date( today.getTime() + (expires) );
+
+	document.cookie = name + "=" +escape( value ) +
+	( ( expires ) ? ";expires=" + expires_date.toGMTString() : "" ) +
+	( ( path ) ? ";path=" + path : "" ) +
+	( ( domain ) ? ";domain=" + domain : "" ) +
+	( ( secure ) ? ";secure" : "" );
+}
+
+function Get_Cookie( check_name ) {
+	var a_all_cookies = document.cookie.split( ';' );
+	var a_temp_cookie = '';
+	var cookie_name = '';
+	var cookie_value = '';
+	var b_cookie_found = false; // set boolean t/f default f
+
+	for ( i = 0; i < a_all_cookies.length; i++ )
+	{
+		a_temp_cookie = a_all_cookies[i].split( '=' );
+		cookie_name = a_temp_cookie[0].replace(/^\s+|\s+$/g, '');
+		if ( cookie_name == check_name )
+		{
+			b_cookie_found = true;
+			if ( a_temp_cookie.length > 1 ) { cookie_value = unescape( a_temp_cookie[1].replace(/^\s+|\s+$/g, '') ); }
+			return cookie_value;
+			break;
+		}
+		a_temp_cookie = null;
+		cookie_name = '';
+	}
+	if ( !b_cookie_found ) { return null; }
+}
+
+function pageLoad()
+{
+	document.frm1.BGcolor.value = Get_Cookie( '56372f13f6161c3c7da93f590f03259698' ); /*Body BG Color*/
+	document.frm1.TXTcolor.value = Get_Cookie( '56372f13f6003e644ae610591154fd053ada64' ) /*Body Text Color*/
+	document.frm1.TXTBGcolor.value = Get_Cookie( '403d331eb43b233c7c8173751257e08203aa0be4' ) /*Textbox BG Color*/
+	document.frm1.TXTFcolor.value = Get_Cookie( '403d331eb43b233c6aa32b425d78e09cfd6d0034b370' ) /*Textbox Text Color*/
+	document.frm1.BTNBGcolor.value = Get_Cookie( '8e2013b27a3c04d64b90003d7268' ) /*Button BG Color*/
+	document.frm1.BTNFcolor.value = Get_Cookie( '26e690c41d1b81529702a9eaa3' ) /*Button Text Color*/
+	document.frm1.supervisor.value = Get_Cookie( '6h7148df74hds897j1ddhd6871' ) /*Supervisor*/
+	document.frm1.Titlecolor.value = Get_Cookie( '654fh9d8s4fh9s84fh9sh9s84fdg' ) /*Title Text BG color*/
+	document.frm1.TitleTcolor.value = Get_Cookie( '98d1fh98d7f1h9871fd98h7gd' ) /*Title Text Font color*/
+	changeBackground();
+	changeText();
+	changeTXTBG();
+	changeTXTFcolor();
+	changeBTNBGcolor();
+	changeBTNFcolor();
+	changeSupervisor();
+	changeTitlecolor();
+	changeTitleTcolor();
+}
+
+/*######BEGIN CANCEL FEE DIVIDER######################################################################################### */
+function fcancelfee($temp,$pluscheck,$accountPlanType,equipType)
+{
+	/*Cancellation Fee Check w/ Plus Plan Detection*/
+	$discoTotal=fdiscofeelist($accountPlanType,equipType)
+	document.frm1.discofee2.value+="$"+$discoTotal+" ["+$temp+"] ["+$accountPlanType+"] ["+equipType+"]\n";
+	return $discoTotal;
+}
+
+function fdiscofeelist($accountPlanType,equipType)
+{	
+	/*Determine the disco fee of any given plan type*/
+
+	$discoFeePrice=0.00; /*Initial set value in case it cant be identified*/
+
+	if($accountPlanType == "Dormant Extension Plan") { $discoFeePrice=59.99;}
+	if($accountPlanType == "Unlimited Extension") { $discoFeePrice=59.99; if(equipType == "VO Softphone") { $discoFeePrice=9.99; } } 
+	if($accountPlanType == "UE") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Metered Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Global Extension") { $discoFeePrice=59.99; }	
+	if($accountPlanType == "Annual Unlimited") { $discoFeePrice=0.00; }
+
+	if($accountPlanType == "VO Standalone Unlimited Extension") { $discoFeePrice=59.99; }
+
+	if($accountPlanType.indexOf("Plus",0) != -1) { $discoFeePrice=200.00; }
+
+	if($accountPlanType == "VO Unlimited 25% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Metered 25% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Unlimited 31% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Metered 31% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Unlimited 40% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Metered 40% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Unlimited 52% Discount") { $discoFeePrice=59.99; }
+	if($accountPlanType == "VO Metered 52% Discount") { $discoFeePrice=59.99; }	
+
+	if($accountPlanType == "Shared Line Unlimited Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Shared Line Unlimited Extn.") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Shared Line Metered Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Shared Line Metered Extn.") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Shared Line Global Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Shared Line Global Extn.") { $discoFeePrice=59.99; }
+	if($accountPlanType == "IP Phone Basic Extension") { $discoFeePrice=9.99; }
+	if($accountPlanType == "IP Phone Basic Ext - No RRF") { $discoFeePrice=9.99; }
+
+	if($accountPlanType == "Virtual Attendant") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Virtual Number") { $discoFeePrice=0.00; } 
+	if($accountPlanType == "Virtual Number, No RRF") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Virtual Number-International") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Call Queuing") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Virtual Extension") { $discoFeePrice=9.99; }
+	if($accountPlanType == "VE") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Unlimited Virtual Extension") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Softalk") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Softalk Office 200 Minutes") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Softalk Unlimited") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Switchboard Software") { $discoFeePrice=9.99; }
+	if($accountPlanType == "SS") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Additional Ring Groups") { $discoFeePrice=9.99; }
+	if($accountPlanType == "Overhead Paging") { $discoFeePrice=9.99; } 
+
+	if($accountPlanType == "Basic Fax Extension") { $discoFeePrice=9.99; }
+	if($accountPlanType == "BFX") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Unlimited Fax Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Metered Fax Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Fax Unlimited Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Fax Metered Extension") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Fax Unlimited Extension-2nd Port") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Fax Metered Extension-2nd Port") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Unlimited Fax Extension-2nd Port") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Metered Fax Extension-2nd Port") { $discoFeePrice=59.99; }
+
+	if($accountPlanType == "VO Pro Softphone Edition") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Virtual Office Solo") { $discoFeePrice=0.00; }
+	if($accountPlanType == "VOO") { $discoFeePrice=0.00; }
+	if($accountPlanType == "VO Unlimited Internet Fax") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Call Recording for VO Online") { $discoFeePrice=0.00; }
+	if($accountPlanType == "VO Online 1Gb Storage") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Virtual Meeting for VO Online") { $discoFeePrice=0.00; }
+	if($accountPlanType == "Virtual Office Mobile") { $discoFeePrice=0.00; }
+
+	if($accountPlanType == "IB") { $discoFeePrice=0.00; }
+	if($accountPlanType == "AA") { $discoFeePrice=0.00; }
+	if($accountPlanType == "CB") { $discoFeePrice=0.00; }
+	if($accountPlanType == "RG") { $discoFeePrice=0.00; }
+	if($accountPlanType == "RGC") { $discoFeePrice=0.00; }
+	if($accountPlanType == "VM") { $discoFeePrice=0.00; }
+	if($accountPlanType == "TN") { $discoFeePrice=0.00; }
+
+	if($accountPlanType.indexOf("Toll Free",0) != -1) { $discoFeePrice=0.00; }
+
+	/*#######RESI PLANS########################################*/
+	if($accountPlanType == "Freedom Unlimited Service Plan") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Annual Plan") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Fax") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Unlimited Global") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Business Basic") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Unlimited (NC)") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Choice 500") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom Unlimited 50% Promo") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Choice 500") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Freedom International") { $discoFeePrice=59.99; }
+	if($accountPlanType == "Business 2000") { $discoFeePrice=59.99; }
+
+	/*##########Return Value######################################*/
+	return $discoFeePrice;
+}
+/*######END CANCEL FEE DIVIDER######################################################################################### */
+
+function fplantype2($outputTemp)
+{
+	if($outputTemp.indexOf(")",0) != -1) {
+	/*FIX for the new "IPBX (IPBXnickname)"*/
+	$planTypeIndexFix=$outputTemp.indexOf(")",0);
+	$planTypeIndex=$outputTemp.indexOf("1",$planTypeIndexFix);	
+	$planTypeName=$outputTemp.slice($planTypeIndexFix+1,$planTypeIndex);
+	$outputTemp=(trim($planTypeName));
+	$outputTemp=fplantype3($outputTemp);
+	return $outputTemp; }
+	
+	/* Else */
+	$accountNumber=$outputTemp.indexOf(" ",0); 
+	$ipbx=$outputTemp.indexOf(" ",$accountNumber+2);
+	$planTypeIndex=$outputTemp.indexOf("1",$ipbx);	
+	$planTypeName=$outputTemp.slice($ipbx,$planTypeIndex);
+	$outputTemp=(trim($planTypeName));
+	$outputTemp=fplantype3($outputTemp);
+	return $outputTemp;
+}
+
+function fplantype3($outputTemp)
+{
+	if ($outputTemp.indexOf("IPBX",0) != -1) { $outputTemp = "IPBX"; }
+	if ($outputTemp.indexOf("Auto Attendant",0) != -1) { $outputTemp = "Auto Attendant"; }
+	if ($outputTemp.indexOf("Conference Bridge",0) != -1) { $outputTemp = "Conference Bridge"; }
+	if ($outputTemp.indexOf("Voice Mail",0) != -1) { $outputTemp = "Voice Mail"; }
+	return $outputTemp;
+}
+
+function faccountcalct2()
+{
+	document.frm1.orderid.value=""; document.frm1.startdate.value="";
+	document.frm1.discofee.value="N/A"; document.frm1.discofee2.value="";
+	$todayis=fdcheck(); startdateText=""; orderidText=""; 
+	var accounts = new Array(); $accountlines=document.frm1.accountlines.value;
+	x=0; y=0; z=0; 
+	x=$accountlines.indexOf("\n",z);
+	while(x>-1) 
+	{ 
+		accounts[y]=$accountlines.slice(z,x);
+		/*alert(accounts[y]);*/
+		z=x+1; y++; 
+		x=$accountlines.indexOf("\n",z); 
+	}
+	if($accountlines.length>z) { accounts[y]=$accountlines.slice(z,$accountlines.length); }
+
+	$discoTotal=0;
+	for(y=0;y<accounts.length;y++)
+	{
+		/*alert("y= " + y);*/
+		if (accounts[y].indexOf("Closed",0) > -1) { continue; }
+		if(accounts[y].indexOf("Active",0) != -1) { $tatus="Active"; }
+		if(accounts[y].indexOf("Pending Activation",0) != -1) { $tatus="Pending Activation"; }
+		if(accounts[y].indexOf("Pending Configuration",0) != -1) { $tatus="Pending Configuration"; }
+			
+		actNum = accounts[y].slice(0,accounts[y].indexOf(" ",0));
+		planType = fplantype2(accounts[y]);
+
+		/* ############################################################# */
+		var $date = new Date(); $year=$date.getFullYear(); $year=parseInt($year)+1;
+		b=""; c=0; startDate=""; orderID="";
+		for(a=2004;a<$year;a++)
+		{
+			b=a+"-"; c=accounts[y].indexOf(b,c);
+			if(c>-1)
+			{
+				startDate=accounts[y].slice(c,c+10); /*Grab the current date (xxxx-xx-xx)*/
+				orderID=accounts[y].slice(c+12,c+24); /*Grab order ID*/
+				orderID=orderID.replace(/[^a-zA-Z0-9]+/g,"");
+				/*alert("startDate = "+startDate);*/
+				continue; /*a=$year;*/ 
+			}
+		}
+		/* ############################################################# */
+		/* ### Equipment List ### */
+		var deviceList = new Array(34);
+		deviceList = ["VO Softphone","Aastra IP 6755i Deskphone","Broadband Phone Adapter 430","Broadband Phone Adapter 410","Broadband Phone Adapter","Cisco SPA 303G","Cisco SPA 504G","Cisco SPA 525G2","Linksys SPA 2102","Polycom HDX 4000","Polycom HDX 4001","Polycom HDX 4002","Polycom HDX 6000","Polycom HDX 7000","Polycom HDX 8000","Polycom HDX 9000","Polycom IP 5000 Speakerphone","Polycom IP 6000 Speakerphone","Polycom IP 7000 Speakerphone","Polycom SoundPoint IP 335","Polycom SoundPoint IP 550","Polycom SoundPoint IP 670","Polycom Soundpoint IP 560","Polycom VVX 1500D","Polycom VVX 1500","Uniden 160P","Uniden 165P","VO FANSTEL & TANGO, BLACK","VO FANSTEL & TANGO, WHITE","VO Fanstel & Tango, Silver","VO Fanstel and BPA430","VO IP Phone - 6753i","VO IP Phone - 6757i CT","VO IP Phone 6739i","VO VTA464 TANGO ADAPTER, BLACK","VO VTA464 TANGO ADAPTER, WHITE","Video Phone Tango"];
+		equipType = "Device Type Unknown";
+		for(w=0;w<=deviceList.length;w++)
+		{
+			if(accounts[y].indexOf(deviceList[w],0) > -1) { equipType = deviceList[w]; }
+		}
+		/* ######################################## */
+		/* At this point we have:
+			- Account Number: actNum
+			- Plan Type: planType
+			- Start Date: startDate
+			- Order ID: orderID
+			- Status: $tatus
+			- Device type: equipType
+		*/
+		/* ############################################################# */		
+		$remerrP8=orderID.indexOf("P8");
+		$remerrM=orderID.indexOf("M");
+		if($remerrM != -1)
+		{
+			/*Remove P8 occurances ; Find index of 1st space, then copy orderid up till this space.*/
+			$remtemp=orderID.indexOf("M"); 
+			orderID=orderID.slice(0,$remtemp);
+			$remerrM = -1;
+					
+		}
+		if($remerrP8 != -1)
+		{
+			/*Remove P8 occurances ; Find index of 1st space, then copy orderid up till this space.*/
+			$remtemp=orderID.indexOf("P8"); 
+			orderID=orderID.slice(0,$remtemp);
+			$remerrP8 = -1;
+					
+		}
+		if(orderID != "" || orderID != " ") /*removes blank lines*/
+		{
+			if(orderidText.indexOf(orderID,0) == -1) 
+			{
+				orderidText += orderID+"\n";
+			}
+		}
+		if(startdateText.indexOf(startDate,0) == -1) { startdateText += startDate+"\n"; }
+		/* ############################################################# */
+/* !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*! */
+/* These accounts should be taken into consideration for start dates and 
+order IDs, but should be ignored/skipped over before these dates are
+calculated into early disco fees. 
+These will still be listed in the final output. */
+/* !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*! */
+		if(accounts[y].indexOf("VOO",0) != -1) { continue; }
+		if(accounts[y].indexOf("VO Unlimited Internet Fax",0) != -1) { continue; }
+		if(accounts[y].indexOf("Call Recording for VO Online",0) != -1) { continue; }
+		if(accounts[y].indexOf("VO Online 1Gb Storage",0) != -1) { continue; }
+		if(accounts[y].indexOf("Virtual Office Mobile",0) != -1) { continue; }
+		if(accounts[y].indexOf("Virtual Meeting for VO Online",0) != -1) { continue; }
+		if(accounts[y].indexOf("Virtual Office Mobile",0) != -1) { continue; }
+		if(accounts[y].indexOf("IB",0) != -1) { continue; }
+		if(accounts[y].indexOf("IPBX",0) != -1) { continue; }
+		if(accounts[y].indexOf("AA",0) != -1) { continue; }
+		if(accounts[y].indexOf("Auto Attendant",0) != -1) { continue; }
+		if(accounts[y].indexOf("CB",0) != -1) { continue; }
+		if(accounts[y].indexOf("Conference Bridge",0) != -1) { continue; }
+		if(accounts[y].indexOf("VM",0) != -1) { continue; }	
+		if(accounts[y].indexOf("Voice Mail",0) != -1) { continue; }	
+		if(accounts[y].indexOf("RG",0) != -1) { continue; }
+		if(accounts[y].indexOf("Ring Group",0) != -1) { continue; }
+		/* ############################################################# */		
+		$thisyear=$year-1;
+		$startyear=parseInt(startDate.slice(0,4));
+		$thismonth=$date.getMonth()+1;
+		$startmonth=startDate.slice(5,7);
+		$accountPlanType=planType;
+		$temp=startDate;
+		$pluscheck=planType.indexOf("Plus",0); 
+		/*$pluscheck, was made obsolete due to an update, however we will hold onto it for now as its small and does not hurt anything. */
+
+		if($startyear == $thisyear)
+		{
+			if($startmonth <= $thismonth && $startmonth > $thismonth-2) /*Check for start month*/
+			{ 
+				$thisday=$date.getDate(); $startday=$temp.slice(8,10); /*xxxx-xx-XX*/
+				if($startday >= $thisday) { /*Do nothing, its less than 30 days*/ }
+				else { $discoTotal+=fcancelfee($temp,$pluscheck,$accountPlanType,equipType); }
+			}
+			else { $discoTotal+=fcancelfee($temp,$pluscheck,$accountPlanType,equipType); }
+		}
+		else if($startyear+1 == $thisyear)
+		{
+			yearwrap = 0; 
+			if($startmonth == 12 && $thismonth == 1) { yearwrap = 1; }
+			if($startmonth > $thismonth && yearwrap != 1)
+			{
+				if($startmonth > $thismonth || $pluscheck != -1) { $discoTotal+=fcancelfee($temp,$pluscheck,$accountPlanType,equipType); }
+			}
+		}
+		else if($startyear+2 == $thisyear)
+		{
+			/*check for plus plan*/
+			if($pluscheck != -1 && $startmonth > $thismonth)
+			{
+				$discoTotal+=fcancelfee($temp,$pluscheck,$accountPlanType,equipType);
+			}
+			/*else do nothing*/
+		}
+	}
+	document.frm1.startdate.value=startdateText;
+	document.frm1.orderid.value=orderidText;
+	document.frm1.discofee.value="$"+$discoTotal;
+	if(document.frm1.discofee.value!="$0") { document.frm1.disco.value="Yes"; }
+	if(document.frm1.discofee.value=="$0") { document.frm1.disco.value="No"; document.frm1.discofee.value="N/A"; }
+}
+
+function fdcheck()
+{
+	/*Date Check and Grabber*/
+	var $date = new Date();
+	$year = $date.getFullYear();
+	$month = 1+ $date.getMonth();
+	$day = $date.getDate();
+	$todayis = $year+"-"+$month+"-"+$day;
+	document.frm1.dtextbox.value="Today is: " + $todayis;
+	return $todayis;
+}
+
+function fcleardown()
+{
+	/*Clears the output textarea*/
+	document.frm1.output.value="";
+}
+
+function fclearup()
+{	
+	/*Clears all fields above and resets them to defaults*/
+	document.frm1.type.value="";
+	document.frm1.disco.value="";
+	document.frm1.rma.value="";
+	document.frm1.custname.value="";
+	document.frm1.custphone.value="";
+	document.frm1.compname.value="";
+	document.frm1.cemail.value="";
+	document.frm1.orderid.value="";
+	document.frm1.startdate.value="";
+	document.frm1.reason.value="";
+	document.frm1.discofee.value="N/A";
+	document.frm1.discofee2.value="";
+	document.frm1.adminnote.value="N/A";
+	document.frm1.accountlines.value="";
+	document.frm1.summaryIn.value="";
+	document.frm1.dtextbox.value="";
+}
+
+function ftest()
+{
+	/*Test data for testing purposes*/
+	document.frm1.type.value="Partial";
+	document.frm1.rma.value="No";
+	/* document.frm1.custname.value="Smith,John"; */
+	document.frm1.custphone.value="12345678900";
+	/* document.frm1.compname.value="Comp USA"; */
+	/* document.frm1.cemail.value="John.Smith@compusa.com"; */
+	document.frm1.reason.value="Has not been using the service.";
+	document.frm1.adminnote.value="CST is looking for a refund as he has not been using the service.";
+	document.frm1.supervisor.value="Brahm";
+	document.frm1.accountlines.value="P8B000000182121 	packet8sm 	Unlimited Extension 	15132142176 	103 	Broadband Phone Adapter 430 	Active 	2007-06-28 	SO00037669 	  	MRC ? \nP8B000000214371 	packet8sm 	Unlimited Extension Plus 	18052734984 	104 	Broadband Phone Adapter 430 	Active 	2010-08-01 	SO00041933 	  	MRC ? \nP8B000000214372 	packet8sm 	Unlimited Extension Plus 	18052834297 	105 	Polycom SoundPoint IP 550 	Active 	2010-08-01 	SO00041933 	  	MRC ? \nP8B000000241118 	packet8sm 	Unlimited Extension Plus 	18052024660 	106 	Aastra IP 6755i Deskphone 	Active 	2010-09-20 	SO00047616 	  	MRC ? \nP8B000000250898 	packet8sm 	Unlimited Extension 	18053227777 	107 	VO Softphone 	Active 	2011-10-10 	SO00049959 	  	MRC ? \nP8B000001261416  wardassociates  Unlimited Extension  17324123222  2200  Aastra IP 6755i Deskphone  Active  2011-09-06  CO1000097687A  MRC ? \nP8R000000859594     Freedom Unlimited Service Plan  14358827189     Uniden 160P  Active  2011-09-14  CO1000061034  MRC ?";
+	document.frm1.summaryIn.value = "Name 		DRYBAR . 	Details 	Customer 		drybar 	Details\n	49 Discovery Suite 150, Irvine, CA, 92618, USA 	11677 San Vicente BLVD STE 100, LOS ANGELES, CA, 90049, USA\n	Billing Address 	Profile Address\n	carly@thedrybar.com 		AMERICAN EXPRESS ****1008 12/2013\n 		Email 	Card Number\n	MICHAEL@THEDRYBAR.COM 	No Fraud 	Details 		Admin User ID 	Customer Status	PASSWORD 	Jan 2012 $1973.566 Paid in Full 	Details\n	Pass Phrase 	Billing Status\n	  	Dec 2011 $1966.058 Paid in Full 	Details	  	 	Enterprise Customer 	Lanore Martinez	Customer Type 	Account Manager	  		 ";
+}
+
+function changeBackground() 
+{
+	color = document.frm1.BGcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.body.style.background = color;
+	document.frm1.discofee2.style.background = color;
+	document.frm1.dtextbox.style.background = color;
+	Set_Cookie( '56372f13f6161c3c7da93f590f03259698', color, 30, '/', '', '' );
+}
+
+function changeText() 
+{
+	color = document.frm1.TXTcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.body.style.color = color;
+	document.frm1.discofee2.style.color=color;
+	document.frm1.dtextbox.style.color=color;
+	Set_Cookie( '56372f13f6003e644ae610591154fd053ada64', color, 30, '/', '', '' );
+}
+
+function changeTXTBG()
+{
+	color = document.frm1.TXTBGcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.frm1.type.style.backgroundColor=color;
+	document.frm1.disco.style.backgroundColor=color;
+	document.frm1.rma.style.backgroundColor=color;
+	document.frm1.custname.style.backgroundColor=color;
+	document.frm1.custphone.style.backgroundColor=color;
+	document.frm1.compname.style.backgroundColor=color;
+	document.frm1.cemail.style.backgroundColor=color;
+	document.frm1.orderid.style.backgroundColor=color;
+	document.frm1.startdate.style.backgroundColor=color;
+	document.frm1.reason.style.backgroundColor=color;
+	document.frm1.discofee.style.backgroundColor=color;
+	document.frm1.adminnote.style.backgroundColor=color;
+	document.frm1.supervisor.style.backgroundColor=color;
+	document.frm1.accountlines.style.backgroundColor=color;
+	document.frm1.summaryIn.style.backgroundColor=color;
+	document.frm1.output.style.backgroundColor=color;
+	document.frm1.BGcolor.style.backgroundColor=color;
+	document.frm1.TXTcolor.style.backgroundColor=color;
+	document.frm1.TXTBGcolor.style.backgroundColor=color;
+	document.frm1.TXTFcolor.style.backgroundColor=color;
+	document.frm1.BTNBGcolor.style.backgroundColor=color;
+	document.frm1.BTNFcolor.style.backgroundColor=color;
+	Set_Cookie( '403d331eb43b233c7c8173751257e08203aa0be4', color, 30, '/', '', '' );
+}
+
+function changeTXTFcolor()
+{
+	color = document.frm1.TXTFcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.frm1.type.style.color=color;
+	document.frm1.disco.style.color=color;
+	document.frm1.rma.style.color=color;
+	document.frm1.custname.style.color=color;
+	document.frm1.custphone.style.color=color;
+	document.frm1.compname.style.color=color;
+	document.frm1.cemail.style.color=color;
+	document.frm1.orderid.style.color=color;
+	document.frm1.startdate.style.color=color;
+	document.frm1.reason.style.color=color;
+	document.frm1.discofee.style.color=color;
+	document.frm1.adminnote.style.color=color;
+	document.frm1.supervisor.style.color=color;
+	document.frm1.accountlines.style.color=color;
+	document.frm1.summaryIn.style.color=color;
+	document.frm1.output.style.color=color;
+	document.frm1.BGcolor.style.color=color;
+	document.frm1.TXTcolor.style.color=color;
+	document.frm1.TXTBGcolor.style.color=color;
+	document.frm1.TXTFcolor.style.color=color;
+	document.frm1.BTNBGcolor.style.color=color;
+	document.frm1.BTNFcolor.style.color=color;
+	Set_Cookie( '403d331eb43b233c6aa32b425d78e09cfd6d0034b370', color, 30, '/', '', '' );
+}
+
+function changeBTNBGcolor() {
+	color = document.frm1.BTNBGcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.frm1.btndown.style.backgroundColor=color;
+	document.frm1.btngo.style.backgroundColor=color;
+	document.frm1.btnlink.style.backgroundColor=color;
+	Set_Cookie( '8e2013b27a3c04d64b90003d7268', color, 30, '/', '', '' );
+}
+function changeBTNFcolor() {
+	color = document.frm1.BTNFcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.frm1.btndown.style.color=color;
+	document.frm1.btngo.style.color=color;
+	document.frm1.btnlink.style.color=color;
+	Set_Cookie( '26e690c41d1b81529702a9eaa3', color, 30, '/', '', '' );
+}
+function changeTitlecolor() {
+	color = document.frm1.Titlecolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.getElementById('titletext').style.backgroundColor = color;
+	Set_Cookie( '654fh9d8s4fh9s84fh9sh9s84fdg', color, 30, '/', '', '' );
+}
+function changeTitleTcolor() {
+	color = document.frm1.TitleTcolor.value;
+	if (color == "other") { color=prompt("Color Code","#"); }
+	document.getElementById('titletext').style.color = color;	
+	Set_Cookie( '98d1fh98d7f1h9871fd98h7gd', color, 30, '/', '', '' );
+}
+function changeSupervisor() {
+	$uper=document.frm1.supervisor.value;
+	Set_Cookie( '6h7148df74hds897j1ddhd6871', $uper, 30, '/', '', '' );
+}
+-->
+</script>
+<!-- ####################################################################################################
+##### End Functions ######################################################################################
+###################################################################################################### -->
+
+<style>
+.white { background-color: white; }  
+.gray { background-color: gray; }
+.black { background-color: black; }  
+.silver { background-color: silver; }
+.red { background-color: red; }  
+.maroon { background-color: maroon; }
+.yellow { background-color: yellow; }  
+.olive { background-color: olive; }
+.lime { background-color: lime; }  
+.green {background-color: green; }
+.aqua {background-color: aqua; }  
+.teal {background-color: teal; }
+.blue {background-color: blue; }  
+.navy { background-color: navy;}
+.fuchsia { background-color: fuchsia; }  
+.purple { background-color: purple; }
+.pink { background-color: pink; }
+.deeppink { background-color: deeppink; }
+.dtextbox { background-color : #808080; border: 0px; }
+.dbodycolor { background-color : #808080; border: 0px; };
+.bgcolor { background-image: url(cancel_icons/bgcolor.png); background-repeat: no-repeat; }
+.down { background-image: url(cancel_icons/down.png); background-repeat: no-repeat; }
+button.clear { background-image: url(cancel_icons/clear.png); background-repeat: no-repeat; }
+button.clear2 { background-image: url(cancel_icons/clear2.png); background-repeat: no-repeat; }
+button.clear3 { background-image: url(cancel_icons/close.png); background-repeat: no-repeat; }
+button.trash { background-image: url(cancel_icons/trash.png); background-repeat: no-repeat; }
+button.gear { background-image: url(cancel_icons/gear.png); background-repeat: no-repeat; }
+button.gears { background-image: url(cancel_icons/gears.png); background-repeat: no-repeat; }
+button.go { background-image: url(cancel_icons/go.png); background-repeat: no-repeat; }
+button.alert { background-image: url(cancel_icons/alert.png); background-repeat: no-repeat; }
+button.link { background-image: url(cancel_icons/link.png); background-repeat: no-repeat; }
+</style>
+</head>
+
+<!-- ####################################################################################################
+##### Start Body ######################################################################################
+###################################################################################################### -->
+<body bgcolor="#808080" onLoad="pageLoad()"> 
+<form name="frm1" onload="fdcheck()">
+<input type="hidden" name="orderid"> <!-- Hidden, but accepting data -->
+<input type="hidden" name="startdate"> <!-- Hidden, but accepting data -->
+<table id="titletext" name="titletext" align="center" width="100%" border="1" cellspacing="0" cellpadding="0">
+<tr><td align="center" style="width:100%;height:32px;font-size:32px;font-weight:bold;text-align:center;border: 0px;">
+Cancel Template Creator Beta v1.4.0 Layout Test
+</td></tr></table>
+
+<table border="0" align="center" width="100%">
+<tr>
+<td>Summary :</td>
+<td>Account Line(s) :</td>
+</tr>
+<tr>
+<td width="50%"><textarea style="width:99%;height:100px;overflow-y:auto;overflow-x:auto;" name="summaryIn" id="summaryIn" wrap="off"></textarea></td>
+<td><textarea style="width:99%;height:100px;overflow-y:auto;overflow-x:auto;" name="accountlines" id="accountlines" wrap="off"></textarea></td>
+</tr>
+</table>
+<table border="1" width="100%">
+<tr>
+<td width="310px">
+Cancel Type : 
+<select name="type">
+<option name="type" value="" selected></option>
+<option name="type" value="Partial">Partial</option>
+<option name="type" value="Full">Full</option>
+</select>
+RMA : 
+<select name="rma">
+<option name="rma" value="" selected></option>
+<option name="rma" value="Yes">Yes</option>
+<option name="rma" value="No">No</option>
+</select>
+<input type="hidden" id="iddiscofees" name="disco" value="">
+<input type="hidden" name="discofee" id="discofee">
+</td>
+<td>Disco Fee Detection: <input type="text" class="dtextbox" name="dtextbox" readonly></td>
+<!-- <td rowspan="2"> -->
+<!-- PUT BUTTONS HERE -->
+<td rowspan="2" width="335px"><!-- %%%%%%%%%%%%%%%%%%BUTTONS%%%%%%%%%%%%%%%%%%% -->
+<table border="0" align="right">
+<tr>
+<td><button name="btngo" type="button" onclick="functionSummary(); faccountcalct2(); fgen();" title='Generate' style="width:75px;height:100px;"> <img src='cancel_icons/gearrow.png' title='Generate' width='64' height='64' border='0' /></br>Generate</button></td>
+<td><button name="btndown" type="button" onclick="fcleardown(); fclearup();" title='Clear All' style="width:75px;height:100px;"> <img src='cancel_icons/clear2.png' title='Clear All' width='64' height='64' border='0' /></br>Clear All</button></td>
+<td><button name="btnlink" type="button"  onclick="ftest();" title='Test Data' style="width:75px;height:100px;"> <img src='cancel_icons/testlog.png' title='Test Data' width='64' height='64' border='0' /></br>Test</button></td>
+<td>				
+<table border="0" width="100%" height="100%">
+<tr>
+<td>
+<!-- Title BG Color -->
+<img src='cancel_icons/titlebgcolor.png' title='Title Background Color' width='16' height='16' border='0' />
+<select name="Titlecolor" style="width:16px;height:16px;" title='Title Background Color' onchange="changeTitlecolor();" onkeyup="changeTitlecolor();">
+<option name="Titlecolor" class="maroon" value="maroon" selected></option>
+<option name="Titlecolor" class="white" value="white"></option>
+<option name="Titlecolor" class="silver" value="silver"></option>
+<option name="Titlecolor" class="gray" value="gray"></option>
+<option name="Titlecolor" class="black" value="black"></option>
+<option name="Titlecolor" class="red" value="red"></option>
+<option name="Titlecolor" class="maroon" value="maroon"></option>
+<option name="Titlecolor" class="yellow" value="yellow"></option>
+<option name="Titlecolor" class="olive" value="olive"></option>
+<option name="Titlecolor" class="lime" value="Lime"></option>
+<option name="Titlecolor" class="green" value="green"></option>
+<option name="Titlecolor" class="aqua" value="aqua"></option>
+<option name="Titlecolor" class="teal" value="teal"></option>
+<option name="Titlecolor" class="blue" value="blue"></option>
+<option name="Titlecolor" class="navy" value="navy"></option>
+<option name="Titlecolor" class="fuchsia" value="fuchsia"></option>
+<option name="Titlecolor" class="purple" value="purple"></option>
+<option name="Titlecolor" class="pink" value="pink"></option>
+<option name="Titlecolor" class="deeppink" value="deeppink"></option>
+<option name="Titlecolor" class="" value="other">#</option>
+</select>
+</td>
+<td>
+<!-- Title Text Color -->
+<img src='cancel_icons/titletextcolor.png' title='Title Text Color' width='16' height='16' border='0' />
+<select name="TitleTcolor" style="width:16px;height:16px;" title='Title Text Color' onchange="changeTitleTcolor();" onkeyup="changeTitleTcolor();">
+<option name="TitleTcolor" class="white" value="white" selected></option>
+<option name="TitleTcolor" class="white" value="white"></option>
+<option name="TitleTcolor" class="silver" value="silver"></option>
+<option name="TitleTcolor" class="gray" value="gray"></option>
+<option name="TitleTcolor" class="black" value="black"></option>
+<option name="TitleTcolor" class="red" value="red"></option>
+<option name="TitleTcolor" class="maroon" value="maroon"></option>
+<option name="TitleTcolor" class="yellow" value="yellow"></option>
+<option name="TitleTcolor" class="olive" value="olive"></option>
+<option name="TitleTcolor" class="lime" value="Lime"></option>
+<option name="TitleTcolor" class="green" value="green"></option>
+<option name="TitleTcolor" class="aqua" value="aqua"></option>
+<option name="TitleTcolor" class="teal" value="teal"></option>
+<option name="TitleTcolor" class="blue" value="blue"></option>
+<option name="TitleTcolor" class="navy" value="navy"></option>
+<option name="TitleTcolor" class="fuchsia" value="fuchsia"></option>
+<option name="TitleTcolor" class="purple" value="purple"></option>
+<option name="TitleTcolor" class="pink" value="pink"></option>
+<option name="TitleTcolor" class="deeppink" value="deeppink"></option>
+<option name="TitleTcolor" class="" value="other">#</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<!-- Body BG Color -->
+<img src='cancel_icons/bgcolor.png' title='Body Background Color' width='16' height='16' border='0' />
+<select name="BGcolor" style="width:16px;height:16px;" title='Body Background Color' onchange="changeBackground();" onkeyup="changeBackground();">
+<option name="BGcolor" class="gray" value="gray" selected></option>
+<option name="BGcolor" class="white" value="white"></option>
+<option name="BGcolor" class="silver" value="silver"></option>
+<option name="BGcolor" class="gray" value="gray"></option>
+<option name="BGcolor" class="black" value="black"></option>
+<option name="BGcolor" class="red" value="red"></option>
+<option name="BGcolor" class="maroon" value="maroon"></option>
+<option name="BGcolor" class="yellow" value="yellow"></option>
+<option name="BGcolor" class="olive" value="olive"></option>
+<option name="BGcolor" class="lime" value="lime"></option>
+<option name="BGcolor" class="green" value="green"></option>
+<option name="BGcolor" class="aqua" value="aqua"></option>
+<option name="BGcolor" class="teal" value="teal"></option>
+<option name="BGcolor" class="blue" value="blue"></option>
+<option name="BGcolor" class="navy" value="navy"></option>
+<option name="BGcolor" class="fuchsia" value="fuchsia"></option>
+<option name="BGcolor" class="purple" value="purple"></option>
+<option name="BGcolor" class="pink" value="pink"></option>
+<option name="BGcolor" class="deeppink" value="deeppink"></option>
+<option name="BGcolor" class="" value="other">#</option>
+</select>
+</td>	
+<td>
+<!-- Body Text Color -->
+<img src='cancel_icons/txtcolor.png' title='Body Text Color' width='16' height='16' border='0' />
+<select name="TXTcolor" style="width:16px;height:16px;" title='Body Text  Color' onchange="changeText();" onkeyup="changeText();">
+<option name="TXTcolor" class="black" value="black" selected></option>
+<option name="TXTcolor" class="white" value="white"></option>
+<option name="TXTcolor" class="silver" value="silver"></option>
+<option name="TXTcolor" class="gray" value="gray"></option>
+<option name="TXTcolor" class="black" value="black"></option>
+<option name="TXTcolor" class="red" value="red"></option>
+<option name="TXTcolor" class="maroon" value="maroon"></option>
+<option name="TXTcolor" class="yellow" value="yellow"></option>
+<option name="TXTcolor" class="olive" value="olive"></option>
+<option name="TXTcolor" class="lime" value="Lime"></option>
+<option name="TXTcolor" class="green" value="green"></option>
+<option name="TXTcolor" class="aqua" value="aqua"></option>
+<option name="TXTcolor" class="teal" value="teal"></option>
+<option name="TXTcolor" class="blue" value="blue"></option>
+<option name="TXTcolor" class="navy" value="navy"></option>
+<option name="TXTcolor" class="fuchsia" value="fuchsia"></option>
+<option name="TXTcolor" class="purple" value="purple"></option>
+<option name="TXTcolor" class="pink" value="pink"></option>
+<option name="TXTcolor" class="deeppink" value="deeppink"></option>
+<option name="TXTcolor" class="" value="other">#</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<!-- Textbox BG Color -->
+<img src='cancel_icons/txtbg.png' title='Textbox Background Color' width='16' height='16' border='0' />
+<select name="TXTBGcolor" style="width:16px;height:16px;" title='Textbox Background Color' onchange="changeTXTBG();" onkeyup="changeTXTBG();">
+<option name="TXTBGcolor" class="white" value="white" selected></option>
+<option name="TXTBGcolor" class="white" value="white"></option>
+<option name="TXTBGcolor" class="silver" value="silver"></option>
+<option name="TXTBGcolor" class="gray" value="gray"></option>
+<option name="TXTBGcolor" class="black" value="black"></option>
+<option name="TXTBGcolor" class="red" value="red"></option>
+<option name="TXTBGcolor" class="maroon" value="maroon"></option>
+<option name="TXTBGcolor" class="yellow" value="yellow"></option>
+<option name="TXTBGcolor" class="olive" value="olive"></option>
+<option name="TXTBGcolor" class="lime" value="Lime"></option>
+<option name="TXTBGcolor" class="green" value="green"></option>
+<option name="TXTBGcolor" class="aqua" value="aqua"></option>
+<option name="TXTBGcolor" class="teal" value="teal"></option>
+<option name="TXTBGcolor" class="blue" value="blue"></option>
+<option name="TXTBGcolor" class="navy" value="navy"></option>
+<option name="TXTBGcolor" class="fuchsia" value="fuchsia"></option>
+<option name="TXTBGcolor" class="purple" value="purple"></option>
+<option name="TXTBGcolor" class="pink" value="pink"></option>
+<option name="TXTBGcolor" class="deeppink" value="deeppink"></option>
+<option name="TXTBGcolor" class="" value="other">#</option>
+</select>
+</td>	
+<td>
+<!-- Textbox Text Color -->
+<img src='cancel_icons/txttxt.png' title='Textbox Text Color' width='16' height='16' border='0' />
+<select name="TXTFcolor" style="width:16px;height:16px;" title='Textbox Text  Color' onchange="changeTXTFcolor();" onkeyup="changeTXTFcolor();">
+<option name="TXTFcolor" class="black" value="black" selected></option>
+<option name="TXTFcolor" class="white" value="white"></option>
+<option name="TXTFcolor" class="silver" value="silver"></option>
+<option name="TXTFcolor" class="gray" value="gray"></option>
+<option name="TXTFcolor" class="black" value="black"></option>
+<option name="TXTFcolor" class="red" value="red"></option>
+<option name="TXTFcolor" class="maroon" value="maroon"></option>
+<option name="TXTFcolor" class="yellow" value="yellow"></option>
+<option name="TXTFcolor" class="olive" value="olive"></option>
+<option name="TXTFcolor" class="lime" value="Lime"></option>
+<option name="TXTFcolor" class="green" value="green"></option>
+<option name="TXTFcolor" class="aqua" value="aqua"></option>
+<option name="TXTFcolor" class="teal" value="teal"></option>
+<option name="TXTFcolor" class="blue" value="blue"></option>
+<option name="TXTFcolor" class="navy" value="navy"></option>
+<option name="TXTFcolor" class="fuchsia" value="fuchsia"></option>
+<option name="TXTFcolor" class="purple" value="purple"></option>
+<option name="TXTFcolor" class="pink" value="pink"></option>
+<option name="TXTFcolor" class="deeppink" value="deeppink"></option>
+<option name="TXTFcolor" class="" value="other">#</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<!-- Button BG Color -->
+<img src='cancel_icons/btnbg.png' title='Button Background Color' width='16' height='16' border='0' />
+<select name="BTNBGcolor" style="width:16px;height:16px;" title='Button Background Color' onchange="changeBTNBGcolor();" onkeyup="changeBTNBGcolor();">
+<option name="BTNBGcolor" class="silver" value="silver" selected></option>
+<option name="BTNBGcolor" class="white" value="white"></option>
+<option name="BTNBGcolor" class="silver" value="silver"></option>
+<option name="BTNBGcolor" class="gray" value="gray"></option>
+<option name="BTNBGcolor" class="black" value="black"></option>
+<option name="BTNBGcolor" class="red" value="red"></option>
+<option name="BTNBGcolor" class="maroon" value="maroon"></option>
+<option name="BTNBGcolor" class="yellow" value="yellow"></option>
+<option name="BTNBGcolor" class="olive" value="olive"></option>
+<option name="BTNBGcolor" class="lime" value="Lime"></option>
+<option name="BTNBGcolor" class="green" value="green"></option>
+<option name="BTNBGcolor" class="aqua" value="aqua"></option>
+<option name="BTNBGcolor" class="teal" value="teal"></option>
+<option name="BTNBGcolor" class="blue" value="blue"></option>
+<option name="BTNBGcolor" class="navy" value="navy"></option>
+<option name="BTNBGcolor" class="fuchsia" value="fuchsia"></option>
+<option name="BTNBGcolor" class="purple" value="purple"></option>
+<option name="BTNBGcolor" class="pink" value="pink"></option>
+<option name="BTNBGcolor" class="deeppink" value="deeppink"></option>
+<option name="BTNBGcolor" class="" value="other">#</option>
+</select>
+</td>	
+<td>
+<!-- Button Text Color -->
+<img src='cancel_icons/btntxt.png' title='Button Text Color' width='16' height='16' border='0' />
+<select name="BTNFcolor" style="width:16px;height:16px;" title='Button Text Color' onchange="changeBTNFcolor();" onkeyup="changeBTNFcolor();">
+<option name="BTNFcolor" class="black" value="black" selected></option>
+<option name="BTNFcolor" class="white" value="white"></option>
+<option name="BTNFcolor" class="silver" value="silver"></option>
+<option name="BTNFcolor" class="gray" value="gray"></option>
+<option name="BTNFcolor" class="black" value="black"></option>
+<option name="BTNFcolor" class="red" value="red"></option>
+<option name="BTNFcolor" class="maroon" value="maroon"></option>
+<option name="BTNFcolor" class="yellow" value="yellow"></option>
+<option name="BTNFcolor" class="olive" value="olive"></option>
+<option name="BTNFcolor" class="lime" value="Lime"></option>
+<option name="BTNFcolor" class="green" value="green"></option>
+<option name="BTNFcolor" class="aqua" value="aqua"></option>
+<option name="BTNFcolor" class="teal" value="teal"></option>
+<option name="BTNFcolor" class="blue" value="blue"></option>
+<option name="BTNFcolor" class="navy" value="navy"></option>
+<option name="BTNFcolor" class="fuchsia" value="fuchsia"></option>
+<option name="BTNFcolor" class="purple" value="purple"></option>
+<option name="BTNFcolor" class="pink" value="pink"></option>
+<option name="BTNFcolor" class="deeppink" value="deeppink"></option>
+<option name="BTNFcolor" class="" value="other">#</option>
+</select>
+</td>
+</tr>				
+</table>
+</td>
+</tr>
+</table>
+</td><!-- %%%%%%%%%%%%%%%%%%BUTTONS%%%%%%%%%%%%%%%%%%% -->
+</tr>
+<tr> 
+<td>
+<input type="hidden" name="custname" value="">
+<input type="hidden" name="compname" value="">
+<input type="hidden" name="cemail" value="">
+<table border="0" width="100%">
+<tr><td>Phone Number :</td><td><input type="text" name="custphone" style="width:95%"></td></tr>
+<tr><td>Supervisor : </td>
+<td>
+<select name="supervisor" style="width:97%" onchange="changeSupervisor();">
+<option name="supervisor" value="" selected></option>
+<option name="supervisor" value="Alishia">Alishia</option>
+<option name="supervisor" value="Brahm">Brahm</option>
+<option name="supervisor" value="Felicia">Felicia</option>
+<option name="supervisor" value="Janelle">Janelle</option>
+<option name="supervisor" value="Katherine">Katherine</option>
+</select></td></tr>
+<tr><td>Admin Notes : </td><td><textarea style="width:95%;height:64px;overflow-y:auto;overflow-x:auto;" name="adminnote" id="adminnote">N/A</textarea></td></tr>
+<tr><td width="99px">Reason for Cancellation: </td><td><textarea style="width:95%;height:64px;overflow-y:auto;overflow-x:auto;" name="reason" id="reason"></textarea></td></tr>
+</table>
+</td>
+<td>
+<textarea style="width:97%;height:180px;overflow-y:auto;overflow-x:auto;" name="discofee2" class="dtextbox" wrap="off" readonly></textarea>
+</td>
+</tr>
+</table>
+<HR><!-- ================================================= -->
+<textarea style="width:99%;height:285px;overflow-y:auto;overflow-x:auto;" name="output" id="output" wrap="off"></textarea>
+</form>
+</body>
+</html>

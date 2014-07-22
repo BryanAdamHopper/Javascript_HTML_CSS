@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
+<head>
+<link rel="icon" type="image/png" href="http://dantheman.vo.packet8.net:8079/img/8x8logo.jpg">
+<title>iPBX Manager - Admin Login v1.2</title>
+<!-- ########### Created By: Bryan Hopper ########### -->
+<!-- ##  Fixed error due to capital letter -->
+<!-- ##  Fixed error due to spaces or invalid chars -->
+<!-- ##  Added required password -->
+<!-- ##  Added the use of the enter key, now works in FireFox too -->
+<!-- ##  Added Option to allow access to PBX or Server -->
+<!-- ##  Added Option to allow access to the old VO App -->
+<!-- ##  Added cookie password rememberance feature -->
+<!-- ##  Added "Remember Me" option for cookie feature -->
+<!-- ############################################# -->
+<!-- ## Hotfixed pbx: shaffersimpkins , as DNS server does not resolve ip address properly. -->
+<!-- ## Hotfixed pbx: plesciaandco -->
+<!-- ############################################# -->
+<script type="text/javascript">
+
+function fnav(){ type=document.form.type.value; if(type=="App"){ fApp(); return false;}
+user=document.form.txtuser.value; 
+pass=document.form.txtpass.value; 
+if(document.form.remMe.checked==false) { Set_Cookie( '5c21ea4df6459a09051f46fa', '', '', '/', '', '' ); }
+if(document.form.remMe.checked==true) { Set_Cookie( '5c21ea4df6459a09051f46fa', pass, 6, '/', '', '' ); /*6 hours*/ }
+target=document.form.txttarget.value; 
+target=target.replace(/[^a-zA-Z0-9]+/g,""); 
+target=target.toLowerCase(); 
+fcheck=decrypt("794b3502915df7","fcheck");
+target=decrypt("5d1da65e2561a501d3ff78","fcheck")+target+decrypt("148a20417ba3527a7b55136928bfc80ccf448b2d1adaa5f4cd8cc7ba1cb90e418ee75ca2aa0280b843","fcheck")+target+decrypt("99081401203e5f97bdae7a0dd404c23dda","fcheck")+fcheck;
+//#####PBX view HOT FIXES###########################################################################################################
+//DNS servers do not properly resolve these PBXs at the moment.
+// FORMAT: if(document.form.txttarget.value==""<pbx name>"){ target=decrypt("<encrypted address for target> ", fcheck); } 
+//###############################################################################
+if(document.form.txttarget.value=="shaffersimpkins"){ target=decrypt("ee3418927c3abfd18384bdbbe927e909e0be44cdbb567ff498ace40ea96ad2aaf902bc3515d4d14b88c0b0c78dc84f208dfc3f90285d81ec71e23ec35555f89c91a8252c2932bdfc030e88f7", fcheck); } 
+if(document.form.txttarget.value=="plesciaandco"){ target=decrypt("c06b11b1a132a4b5400d6e5a62bdaa49bb7018423d832b02adf74d83d813baabee07b27ab305d51ff0da82869816a669cfd567e4a83f737cbdf244558033b677dee40ca1691f01e27862", fcheck); }
+//##################################################################################################################################
+if(decrypt("79a03fb6b567892cefc79e00ff7369", fcheck)==pass && decrypt("5bfee00ee4006ec9b1", "fcheck")==user){ fcheck=1; } 
+else if(decrypt("bf3105b7ce64228e0d05af049f", fcheck)==pass && decrypt("5bfee00ee4006ec9b1", "fcheck")==user){ fcheck=1; } 
+else if(decrypt("ddb2748fa304652246", fcheck)==pass && decrypt("5bfee00ee4006ec9b1", "fcheck")==user){ fcheck=1; } 
+else { fcheck=0; } 
+if(fcheck){ if(type=="PBX"){ self.location.href=target; }
+/* Server = Cluster */
+if(type=="Server") {
+IPBX = document.form.txttarget.value; 
+URL="http://" + IPBX +".vo.packet8.net:8079/ICMServlet?class=Login";
+//#####Cluster View HOT FIXES########################################################################################################
+//DNS servers dont not properly resolve these PBXs at the moment.
+//________"ipbx name"____________________"ipbx IP address"_________________________; }
+//##################################################################################
+if(IPBX == "shaffersimpkins"){ URL="http://" + "192.84.16.80" +":8079/ICMServlet?class=Login"; } 
+if(IPBX == "plesciaandco"){ URL="http://" + "192.84.16.200" +":8079/ICMServlet?class=Login"; }
+//##################################################################################################################################
+document.login_form.userTF.value=document.form.txtuser.value; document.login_form.pwdTF.value=document.form.txtpass.value;
+document.login_form.target.value=IPBX; document.login_form.action=URL; document.login_form.LoginPB.click(); } } 
+else if(!fcheck){ alert("Invalid Login!"); } }
+
+
+function decrypt(f, check) { var prand = ""; for(var i=0; i<check.length; i++){ prand += check.charCodeAt(i).toString(); }
+var sPos = Math.floor(prand.length / 5); var mult = parseInt(prand.charAt(sPos) + prand.charAt(sPos*2) + prand.charAt(sPos*3) + prand.charAt(sPos*4) + prand.charAt(sPos*5));
+var incr = Math.round(check.length / 2); var modu = Math.pow(2, 31) - 1; var salt = parseInt(f.substring(f.length - 8, f.length), 16); f = f.substring(0, f.length - 8); prand += salt;
+while(prand.length > 10){ prand = (parseInt(prand.substring(0, 10)) + parseInt(prand.substring(10, prand.length))).toString(); }
+prand = (mult * prand + incr) % modu; var enc_chr = ""; var sres = ""; for(var i=0; i<f.length; i+=2){ enc_chr = parseInt(parseInt(f.substring(i, i+2), 16) ^ Math.floor((prand / modu) * 255)); 
+sres += String.fromCharCode(enc_chr); prand = (mult * prand + incr) % modu; } return sres; }
+
+function onEnter(e){ e=e||window.event; code=e.keyCode||e.which; if(code==13){ fnav(); } return true; }
+
+
+function fApp(){ self.location.href="http://192.84.18.38:12000/voapp/admin/queryIpbxServer.jsp"; } 
+/* Old Address = "http://voapp.packet8.net:12000/voapp/admin" */
+// ##############################################################################################
+/* Set Cookie Javascript Function
+
+You need to put the name and values in quotes when you call the function, like this:
+Set_Cookie( 'mycookie', 'visited 9 times', 30, '/', '', '' );
+
+Don't forget to put in empty quotes for the unused parameters or you'll get an error when you run the code. This makes the cookie named 'mycookie', with the value of 'visited 9 times', and with a life of 30 days, and the cookie is set to your root folder.
+
+The Set_Cookie values for 'domain' and 'secure' are not utilized. Use 'domain' on the Javascript cookie if you are using it on a subdomain, like widgets.yoursite.com, where the cookie is set on the widgets subdomain, but you need it to be accessible over the whole yoursite.com domain.
+
+It's good practice to not assume the path to the site root will be set the way you want it by default, so do this manually as a rule, '/'. If no value is set for expires, it will only last as long as the current session of the visitor, and will be automatically deleted when they close their browser. 
+*/
+
+function Set_Cookie( name, value, expires, path, domain, secure )
+{
+// set time, it's in milliseconds
+var today = new Date();
+today.setTime( today.getTime() );
+
+/*
+if the expires variable is set, make the correct expires time, the current script below will set
+it for x number of days, to make it for hours, delete * 24, for minutes, delete * 60 * 24 (i.e.:  expires = expires * 1000 * 60 * 60 * 24; )
+*/
+if ( expires ) {  expires = expires * 1000 * 60 * 60;  }
+var expires_date = new Date( today.getTime() + (expires) );
+
+document.cookie = name + "=" +escape( value ) +
+( ( expires ) ? ";expires=" + expires_date.toGMTString() : "" ) +
+( ( path ) ? ";path=" + path : "" ) +
+( ( domain ) ? ";domain=" + domain : "" ) +
+( ( secure ) ? ";secure" : "" );
+}
+// ##############################################################################################
+// this fixes an issue with the old method, ambiguous values
+// with this test document.cookie.indexOf( name + "=" );
+
+function Get_Cookie( check_name ) {
+	// first we'll split this cookie up into name/value pairs
+	// note: document.cookie only returns name=value, not the other components
+	var a_all_cookies = document.cookie.split( ';' );
+	var a_temp_cookie = '';
+	var cookie_name = '';
+	var cookie_value = '';
+	var b_cookie_found = false; // set boolean t/f default f
+
+	for ( i = 0; i < a_all_cookies.length; i++ )
+	{
+		// now we'll split apart each name=value pair
+		a_temp_cookie = a_all_cookies[i].split( '=' );
+
+
+		// and trim left/right whitespace while we're at it
+		cookie_name = a_temp_cookie[0].replace(/^\s+|\s+$/g, '');
+
+		// if the extracted name matches passed check_name
+		if ( cookie_name == check_name )
+		{
+			b_cookie_found = true;
+			// we need to handle case where cookie has no value but exists (no = sign, that is):
+			if ( a_temp_cookie.length > 1 )
+			{
+				cookie_value = unescape( a_temp_cookie[1].replace(/^\s+|\s+$/g, '') );
+			}
+			// note that in cases where cookie is initialized but no value, null is returned
+			if(cookie_value != "") { document.form.remMe.checked=true; }
+			return cookie_value;
+			break;
+		}
+		a_temp_cookie = null;
+		cookie_name = '';
+	}
+	if ( !b_cookie_found )
+	{
+		document.form.remMe.checked=false;
+		return null;
+	}
+}
+// ##############################################################################################
+function pageLoad()
+{
+	// testvalue=404;
+	// alert("pageLoad " + testvalue);
+	pass=Get_Cookie( '5c21ea4df6459a09051f46fa' );
+	document.form.txtpass.value=pass;
+
+	if(document.form.txtpass.value != "") { document.form.txttarget.focus(); }
+	
+	if(document.form.txtpass.value!="" && document.form.remMe.checked==true) 
+	{ 
+		winLoc=window.location.href; x=38; y=winLoc.indexOf(".",38); firstName=winLoc.slice(x,y);
+		a=firstName.slice(0,1); a=a.toUpperCase(); b=firstName.slice(1,firstName.length); firstName=a+b;
+		document.form.txtusername.value="Welcome back, "+firstName+"!"; 
+	}
+}
+// ##############################################################################################
+
+</script>
+
+
+<style type="text/css"> 
+.buttonSubmitHide { display: none; } 
+#password-clear { display: none; }
+</style></head>
+
+
+
+<body bgcolor="#808080" onKeyPress="onEnter(event)" onLoad="pageLoad()"> 
+<table align="center" width="100%" border="1" cellspacing="1" cellpadding="10" bgcolor="#800000">
+<td width="60%" align="center"><font color="#FFFFFF" size="+3"><b>iPBX Auto Admin Login v1.2</b></font></td></table>
+
+<form name="form"><table align="center" bgcolor="#DCDCDC" border="3" cellpadding="5" cellspacing="5">
+<tr><td>User ID :</td><td><input type="text" name="txtuser" value="admin" ></td>
+<td><select name="type">
+<option name="type" value="PBX" selected>PBX</option>
+<option name="type" value="Server">Cluster</option>
+<option name="type" value="App">App</option></select></td></tr>
+<tr><td>Password :</td><td><input  type="password" name="txtpass" tabindex="1"></td><td><input type="checkbox" name="remMe" />Remember Me</td></tr>
+<tr><td>iPBXName :</td>
+<td><input type="text" name="txttarget" value=""tabindex="2"></td>
+<td><input type="button" id="clickbutton" name="clickbutton" value="Login" onclick="fnav();"tabindex="3"></td></tr>
+</table>
+<table align="center" width="100%"><tr><td><input type="text" style="width:100%;text-align: center;background-color : #808080;border: 0px;" name="txtusername" value="" readonly></td></tr></table>
+</form>
+
+<form name="login_form" action="ICMServlet?class=Login&cluster=" method="POST">
+<input type="hidden" name="userTF" value="admin"><input type="hidden" name="pwdTF" >
+<input type="submit" name="LoginPB" value="Login" class="buttonSubmitHide"></form>
+</body><script>document.form.txtpass.focus(); </script></html>
